@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สรุปปัจจัยทั้งหมดที่มีผลต่อการย้อมสีด่าง</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+        }
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            font-size: 1.8rem;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+        .info-box {
+            background-color: #eef5fd;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .info-box-yellow {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+        }
+        .info-box-green {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .summary-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-top: 40px;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>สรุปปัจจัยทั้งหมดที่มีผลต่อการย้อมสีด่าง</h1>
+
+        <!-- ภาพรวมของปัจจัย -->
+        <div class="chart-container">
+            <div class="chart-title">ภาพรวมของปัจจัยที่มีผลต่อการย้อมสีด่าง</div>
+            <div class="grid grid-2">
+                <div class="chart-wrapper">
+                    <canvas id="overallFactorsChart"></canvas>
+                </div>
+                <div>
+                    <h3>สรุปผลกระทบของแต่ละปัจจัย</h3>
+                    <div class="info-box">
+                        <p class="bold">ปัจจัยหลัก (60%): รุ่นและเบอร์ด้าย</p>
+                        <p>โดยเฉพาะ F(W) + 40/2, FD + 50/2, FD + 50/3</p>
+                    </div>
+                    <div class="info-box info-box-green">
+                        <p class="bold">ปัจจัยรอง (26%): อัตราส่วนน้ำต่อวัสดุ</p>
+                        <p>โดยเฉพาะอัตราส่วน 1:8 ซึ่งพบปัญหา 26.1%</p>
+                    </div>
+                    <div class="info-box info-box-yellow">
+                        <p class="bold">ปัจจัยอื่นๆ (14%): เครื่องย้อม, พนักงาน, ฯลฯ</p>
+                        <p>ไม่พบความแตกต่างอย่างมีนัยสำคัญ</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ปัจจัยจากรุ่นและเบอร์ด้าย -->
+        <div class="chart-container">
+            <div class="chart-title">1. ปัจจัยจากรุ่นและเบอร์ด้าย (5 อันดับแรก)</div>
+            <div class="chart-wrapper">
+                <canvas id="modelYarnChart"></canvas>
+            </div>
+            <div class="info-box info-box-yellow">
+                <p class="bold">ข้อสังเกตสำคัญ:</p>
+                <p>3 อันดับแรก (F(W) + 40/2, FD + 50/2, FD + 50/3) รวมกันคิดเป็น 59.9% ของปัญหาทั้งหมด</p>
+                <p>รุ่น FD และ F(W) มีความอ่อนไหวสูงต่อการเกิดสีด่าง โดยเฉพาะเมื่อใช้กับเบอร์ด้าย 50/2, 40/2, และ 50/3</p>
+            </div>
+        </div>
+
+        <!-- ปัจจัยจากอัตราส่วนน้ำต่อวัสดุ -->
+        <div class="chart-container">
+            <div class="chart-title">2. ปัจจัยจากอัตราส่วนน้ำต่อวัสดุ (L:R)</div>
+            <div class="chart-wrapper">
+                <canvas id="ratioChart"></canvas>
+            </div>
+            <div class="info-box info-box-green">
+                <p class="bold">ข้อสังเกตสำคัญ:</p>
+                <p>อัตราส่วน 1:8 มีความเสี่ยงสูงสุดอย่างมีนัยสำคัญ (26.1%)</p>
+                <p>อัตราส่วน 1:12 และ 1:13 พบปัญหาน้อยที่สุด (เพียง 1.2% เท่านั้น)</p>
+            </div>
+        </div>
+
+        <!-- ปัจจัยจากเครื่องย้อม -->
+        <div class="chart-container">
+            <div class="chart-title">3. ปัจจัยจากเครื่องย้อม (10 อันดับแรก)</div>
+            <div class="chart-wrapper">
+                <canvas id="machineChart"></canvas>
+            </div>
+            <div class="info-box">
+                <p class="bold">ข้อสังเกตสำคัญ:</p>
+                <p>ปัญหาจากเครื่องย้อมมีการกระจายตัวค่อนข้างสม่ำเสมอ (4.1-6.9%)</p>
+                <p>เครื่องกลุ่ม B (B-1, B-6, B-7) มีปัญหาเมื่อใช้กับอัตราส่วน 1:8</p>
+            </div>
+        </div>
+
+        <!-- ปัจจัยจากพนักงานย้อม -->
+        <div class="chart-container">
+            <div class="chart-title">4. ปัจจัยจากพนักงานย้อม (ทั้งหมด)</div>
+            <div class="chart-wrapper">
+                <canvas id="operatorChart"></canvas>
+            </div>
+            <div class="info-box info-box-green">
+                <p class="bold">ข้อสังเกตสำคัญ:</p>
+                <p>พนักงาน 5 อันดับแรก (เสนห์ ชัยณรงค์ SAN ธนกร PYAE) มีสัดส่วนปัญหาใกล้เคียงกัน (11.0-13.1%)</p>
+                <p>ไม่พบความแตกต่างอย่างมีนัยสำคัญระหว่างพนักงาน 7 อันดับแรก</p>
+            </div>
+        </div>
+
+        <!-- ปัจจัยจากความสัมพันธ์ระหว่างเครื่องย้อมและอัตราส่วนน้ำต่อวัสดุ -->
+        <div class="chart-container">
+            <div class="chart-title">5. ปัจจัยจากความสัมพันธ์ระหว่างเครื่องย้อมและอัตราส่วนน้ำต่อวัสดุ (10 อันดับแรก)</div>
+            <div class="chart-wrapper">
+                <canvas id="machineRatioChart"></canvas>
+            </div>
+            <div class="info-box info-box-yellow">
+                <p class="bold">ข้อสังเกตสำคัญ:</p>
+                <p>เครื่องในกลุ่ม B (B-1, B-6, B-7) มีปัญหากับอัตราส่วน 1:8 อย่างชัดเจน</p>
+                <p>เครื่อง A-5 มีปัญหากับอัตราส่วน 1:8 เช่นกัน</p>
+                <p>เครื่อง LX-7 มีปัญหากับอัตราส่วน 1:15 แตกต่างจากเครื่องอื่น</p>
+            </div>
+        </div>
+
+        <!-- สรุปและข้อเสนอแนะ -->
+        <div class="summary-section">
+            <h2>สรุปและข้อเสนอแนะ</h2>
+            <div class="info-box info-box-yellow">
+                <h3>ปัจจัยที่มีผลสูงสุดต่อการย้อมสีด่าง:</h3>
+                <ol>
+                    <li>
+                        <span class="bold">รุ่นและเบอร์ด้าย (60%)</span>
+                        <p>โดยเฉพาะ 3 คู่หลัก: F(W) + 40/2, FD + 50/2 และ FD + 50/3</p>
+                    </li>
+                    <li>
+                        <span class="bold">อัตราส่วนน้ำต่อวัสดุ (26%)</span>
+                        <p>โดยเฉพาะอัตราส่วน 1:8 ซึ่งพบปัญหาสูงถึง 26.1%</p>
+                    </li>
+                    <li>
+                        <span class="bold">ความสัมพันธ์ระหว่างเครื่องย้อมและอัตราส่วน (19%)</span>
+                        <p>โดยเฉพาะเครื่องกลุ่ม B (B-1, B-6, B-7) กับอัตราส่วน 1:8</p>
+                    </li>
+                </ol>
+                <p class="bold">ปัจจัยด้านพนักงาน (13%) และเครื่องย้อมอย่างเดียว (7%) มีผลกระทบน้อยกว่าอย่างมีนัยสำคัญ</p>
+            </div>
+            
+            <div class="info-box info-box-green" style="margin-top: 20px;">
+                <h3>ข้อเสนอแนะหลัก:</h3>
+                <ol>
+                    <li>
+                        <span class="bold">พัฒนากระบวนการย้อมเฉพาะสำหรับ 3 คู่หลัก (F(W) + 40/2, FD + 50/2, FD + 50/3)</span>
+                        <p>การแก้ไข 3 คู่นี้จะลดปัญหาได้ถึง 59.9%</p>
+                    </li>
+                    <li>
+                        <span class="bold">หลีกเลี่ยงการใช้อัตราส่วน 1:8 กับคู่ที่มีความเสี่ยงสูง</span>
+                        <p>โดยเฉพาะอย่างยิ่งกับเครื่องกลุ่ม B และ A-5</p>
+                    </li>
+                    <li>
+                        <span class="bold">พิจารณาใช้อัตราส่วน 1:12 หรือ 1:13 กับงานที่มีความเสี่ยงสูง</span>
+                        <p>อัตราส่วนเหล่านี้พบปัญหาเพียง 1.2% เท่านั้น</p>
+                    </li>
+                    <li>
+                        <span class="bold">สร้างระบบเตือนความเสี่ยงล่วงหน้า</span>
+                        <p>เมื่อพบการรวมกันของปัจจัยเสี่ยง เช่น รุ่น FD กับเบอร์ด้าย 50/2 และอัตราส่วน 1:8</p>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Define colors
+        const COLORS = [
+            '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', 
+            '#82ca9d', '#ffc658', '#8dd1e1', '#a4de6c', '#d0ed57',
+            '#ff6b6b', '#48dbfb', '#1dd1a1', '#f368e0', '#576574'
+        ];
+
+        // สร้าง Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. ภาพรวมของปัจจัย (Pie Chart)
+            const overallFactorsCtx = document.getElementById('overallFactorsChart').getContext('2d');
+            const overallFactorsChart = new Chart(overallFactorsCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['รุ่น+เบอร์ด้าย', 'อัตราส่วนน้ำ', 'เครื่องย้อม', 'พนักงาน', 'ปัจจัยอื่นๆ'],
+                    datasets: [{
+                        data: [60, 26, 7, 4, 3],
+                        backgroundColor: COLORS,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 2. ปัจจัยจากรุ่นและเบอร์ด้าย (Horizontal Bar Chart)
+            const modelYarnCtx = document.getElementById('modelYarnChart').getContext('2d');
+            const modelYarnChart = new Chart(modelYarnCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['F(W) + 40/2', 'FD + 50/2', 'FD + 50/3', 'F(W) + 30/2', 'RI + 34/2'],
+                    datasets: [
+                        {
+                            label: 'จำนวนครั้ง',
+                            data: [53, 52, 42, 20, 18],
+                            backgroundColor: COLORS[0],
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'เปอร์เซ็นต์',
+                            data: [21.6, 21.2, 17.1, 8.2, 7.3],
+                            backgroundColor: COLORS[1],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 3. ปัจจัยจากอัตราส่วนน้ำต่อวัสดุ (Bar Chart)
+            const ratioCtx = document.getElementById('ratioChart').getContext('2d');
+            const ratioChart = new Chart(ratioCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['1:8', '1:9', '1:6', '1:15', '1:7'],
+                    datasets: [
+                        {
+                            label: 'จำนวนครั้ง',
+                            data: [64, 39, 30, 29, 27],
+                            backgroundColor: COLORS[2],
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'เปอร์เซ็นต์',
+                            data: [26.1, 15.9, 12.2, 11.8, 11.0],
+                            backgroundColor: COLORS[3],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 4. ปัจจัยจากเครื่องย้อม (Horizontal Bar Chart)
+            const machineCtx = document.getElementById('machineChart').getContext('2d');
+            const machineChart = new Chart(machineCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['A-5', 'B-1', 'DD50-2', 'LX-7', 'B-6', 'DD100', 'B-7', 'LX-5', 'LX-6', 'LX-8'],
+                    datasets: [
+                        {
+                            label: 'จำนวนครั้ง',
+                            data: [17, 15, 14, 14, 13, 13, 12, 10, 10, 10],
+                            backgroundColor: COLORS[4],
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'เปอร์เซ็นต์',
+                            data: [6.9, 6.1, 5.7, 5.7, 5.3, 5.3, 4.9, 4.1, 4.1, 4.1],
+                            backgroundColor: COLORS[5],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 5. ปัจจัยจากพนักงานย้อม (Horizontal Bar Chart)
+            const operatorCtx = document.getElementById('operatorChart').getContext('2d');
+            const operatorData = {
+                labels: ['เสนห์', 'ชัยณรงค์', 'SAN', 'ธนกร', 'PYAE', 'สมศักดิ์', 'วิลาศ', 'ธนิศ', 'หน', 'ณรงค์ศักดิ์', 'ทัศนัย', 'จักรกฤษณ์', 'ทรงกลด', 'เอกชัย', 'สัมพันธ์'],
+                datasets: [
+                    {
+                        label: 'จำนวนครั้ง',
+                        data: [32, 28, 27, 27, 27, 25, 24, 15, 12, 10, 9, 5, 1, 1, 1],
+                        backgroundColor: COLORS[6],
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'เปอร์เซ็นต์',
+                        data: [13.1, 11.4, 11.0, 11.0, 11.0, 10.2, 9.8, 6.1, 4.9, 4.1, 3.7, 2.0, 0.4, 0.4, 0.4],
+                        backgroundColor: COLORS[7],
+                        borderWidth: 1
+                    }
+                ]
+            };
+            
+            const operatorChart = new Chart(operatorCtx, {
+                type: 'bar',
+                data: operatorData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 6. ปัจจัยจากความสัมพันธ์ระหว่างเครื่องย้อมและอัตราส่วนน้ำต่อวัสดุ (Horizontal Bar Chart)
+            const machineRatioCtx = document.getElementById('machineRatioChart').getContext('2d');
+            const machineRatioChart = new Chart(machineRatioCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['B-1 + 1:8', 'A-5 + 1:8', 'B-6 + 1:8', 'B-7 + 1:8', 'LX-7 + 1:15', 'DD100 + 1:8', 'DD600 + 1:7', 'LX-9 + 1:15', 'LX-8 + 1:9', 'DD50-2 + 1:11'],
+                    datasets: [
+                        {
+                            label: 'จำนวนครั้ง',
+                            data: [14, 13, 11, 10, 9, 7, 7, 6, 6, 6],
+                            backgroundColor: COLORS[8],
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'เปอร์เซ็นต์',
+                            data: [5.7, 5.3, 4.5, 4.1, 3.7, 2.9, 2.9, 2.4, 2.4, 2.4],
+                            backgroundColor: COLORS[9],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
