@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สรุปปัจจัยทั้งหมดที่มีผลต่อการย้อมสีด่าง</title>
+    <title>ระบบวิเคราะห์ข้อมูลการย้อมผ้า</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         body {
@@ -12,7 +12,81 @@
             color: #333;
             background-color: #f5f7fa;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+        }
+        
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #007bff, #00c4ff);
+        }
+        .login-box {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-title {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .password-input {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: center;
+            letter-spacing: 5px;
+            font-weight: bold;
+        }
+        .login-button {
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .login-button:hover {
+            background-color: #0069d9;
+        }
+        .error-message {
+            color: #dc3545;
+            margin-top: 15px;
+            display: none;
+        }
+        .company-logo {
+            margin-bottom: 20px;
+            width: 150px;
+            height: 150px;
+            background-color: #f8f9fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        /* Main Content Styles */
+        .content-container {
+            display: none; /* Initially hidden */
         }
         .container {
             max-width: 1200px;
@@ -95,150 +169,278 @@
             margin-bottom: 20px;
             color: #2c3e50;
         }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>สรุปปัจจัยทั้งหมดที่มีผลต่อการย้อมสีด่าง</h1>
-
-        <!-- ภาพรวมของปัจจัย -->
-        <div class="chart-container">
-            <div class="chart-title">ภาพรวมของปัจจัยที่มีผลต่อการย้อมสีด่าง</div>
-            <div class="grid grid-2">
-                <div class="chart-wrapper">
-                    <canvas id="overallFactorsChart"></canvas>
-                </div>
-                <div>
-                    <h3>สรุปผลกระทบของแต่ละปัจจัย</h3>
-                    <div class="info-box">
-                        <p class="bold">ปัจจัยหลัก (60%): รุ่นและเบอร์ด้าย</p>
-                        <p>โดยเฉพาะ F(W) + 40/2, FD + 50/2, FD + 50/3</p>
-                    </div>
-                    <div class="info-box info-box-green">
-                        <p class="bold">ปัจจัยรอง (26%): อัตราส่วนน้ำต่อวัสดุ</p>
-                        <p>โดยเฉพาะอัตราส่วน 1:8 ซึ่งพบปัญหา 26.1%</p>
-                    </div>
-                    <div class="info-box info-box-yellow">
-                        <p class="bold">ปัจจัยอื่นๆ (14%): เครื่องย้อม, พนักงาน, ฯลฯ</p>
-                        <p>ไม่พบความแตกต่างอย่างมีนัยสำคัญ</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ปัจจัยจากรุ่นและเบอร์ด้าย -->
-        <div class="chart-container">
-            <div class="chart-title">1. ปัจจัยจากรุ่นและเบอร์ด้าย (5 อันดับแรก)</div>
-            <div class="chart-wrapper">
-                <canvas id="modelYarnChart"></canvas>
-            </div>
-            <div class="info-box info-box-yellow">
-                <p class="bold">ข้อสังเกตสำคัญ:</p>
-                <p>3 อันดับแรก (F(W) + 40/2, FD + 50/2, FD + 50/3) รวมกันคิดเป็น 59.9% ของปัญหาทั้งหมด</p>
-                <p>รุ่น FD และ F(W) มีความอ่อนไหวสูงต่อการเกิดสีด่าง โดยเฉพาะเมื่อใช้กับเบอร์ด้าย 50/2, 40/2, และ 50/3</p>
-            </div>
-        </div>
-
-        <!-- ปัจจัยจากอัตราส่วนน้ำต่อวัสดุ -->
-        <div class="chart-container">
-            <div class="chart-title">2. ปัจจัยจากอัตราส่วนน้ำต่อวัสดุ (L:R)</div>
-            <div class="chart-wrapper">
-                <canvas id="ratioChart"></canvas>
-            </div>
-            <div class="info-box info-box-green">
-                <p class="bold">ข้อสังเกตสำคัญ:</p>
-                <p>อัตราส่วน 1:8 มีความเสี่ยงสูงสุดอย่างมีนัยสำคัญ (26.1%)</p>
-                <p>อัตราส่วน 1:12 และ 1:13 พบปัญหาน้อยที่สุด (เพียง 1.2% เท่านั้น)</p>
-            </div>
-        </div>
-
-        <!-- ปัจจัยจากเครื่องย้อม -->
-        <div class="chart-container">
-            <div class="chart-title">3. ปัจจัยจากเครื่องย้อม (10 อันดับแรก)</div>
-            <div class="chart-wrapper">
-                <canvas id="machineChart"></canvas>
-            </div>
-            <div class="info-box">
-                <p class="bold">ข้อสังเกตสำคัญ:</p>
-                <p>ปัญหาจากเครื่องย้อมมีการกระจายตัวค่อนข้างสม่ำเสมอ (4.1-6.9%)</p>
-                <p>เครื่องกลุ่ม B (B-1, B-6, B-7) มีปัญหาเมื่อใช้กับอัตราส่วน 1:8</p>
-            </div>
-        </div>
-
-        <!-- ปัจจัยจากพนักงานย้อม -->
-        <div class="chart-container">
-            <div class="chart-title">4. ปัจจัยจากพนักงานย้อม (ทั้งหมด)</div>
-            <div class="chart-wrapper">
-                <canvas id="operatorChart"></canvas>
-            </div>
-            <div class="info-box info-box-green">
-                <p class="bold">ข้อสังเกตสำคัญ:</p>
-                <p>พนักงาน 5 อันดับแรก (เสนห์ ชัยณรงค์ SAN ธนกร PYAE) มีสัดส่วนปัญหาใกล้เคียงกัน (11.0-13.1%)</p>
-                <p>ไม่พบความแตกต่างอย่างมีนัยสำคัญระหว่างพนักงาน 7 อันดับแรก</p>
-            </div>
-        </div>
-
-        <!-- ปัจจัยจากความสัมพันธ์ระหว่างเครื่องย้อมและอัตราส่วนน้ำต่อวัสดุ -->
-        <div class="chart-container">
-            <div class="chart-title">5. ปัจจัยจากความสัมพันธ์ระหว่างเครื่องย้อมและอัตราส่วนน้ำต่อวัสดุ (10 อันดับแรก)</div>
-            <div class="chart-wrapper">
-                <canvas id="machineRatioChart"></canvas>
-            </div>
-            <div class="info-box info-box-yellow">
-                <p class="bold">ข้อสังเกตสำคัญ:</p>
-                <p>เครื่องในกลุ่ม B (B-1, B-6, B-7) มีปัญหากับอัตราส่วน 1:8 อย่างชัดเจน</p>
-                <p>เครื่อง A-5 มีปัญหากับอัตราส่วน 1:8 เช่นกัน</p>
-                <p>เครื่อง LX-7 มีปัญหากับอัตราส่วน 1:15 แตกต่างจากเครื่องอื่น</p>
-            </div>
-        </div>
-
-        <!-- สรุปและข้อเสนอแนะ -->
-        <div class="summary-section">
-            <h2>สรุปและข้อเสนอแนะ</h2>
-            <div class="info-box info-box-yellow">
-                <h3>ปัจจัยที่มีผลสูงสุดต่อการย้อมสีด่าง:</h3>
-                <ol>
-                    <li>
-                        <span class="bold">รุ่นและเบอร์ด้าย (60%)</span>
-                        <p>โดยเฉพาะ 3 คู่หลัก: F(W) + 40/2, FD + 50/2 และ FD + 50/3</p>
-                    </li>
-                    <li>
-                        <span class="bold">อัตราส่วนน้ำต่อวัสดุ (26%)</span>
-                        <p>โดยเฉพาะอัตราส่วน 1:8 ซึ่งพบปัญหาสูงถึง 26.1%</p>
-                    </li>
-                    <li>
-                        <span class="bold">ความสัมพันธ์ระหว่างเครื่องย้อมและอัตราส่วน (19%)</span>
-                        <p>โดยเฉพาะเครื่องกลุ่ม B (B-1, B-6, B-7) กับอัตราส่วน 1:8</p>
-                    </li>
-                </ol>
-                <p class="bold">ปัจจัยด้านพนักงาน (13%) และเครื่องย้อมอย่างเดียว (7%) มีผลกระทบน้อยกว่าอย่างมีนัยสำคัญ</p>
-            </div>
-            
-            <div class="info-box info-box-green" style="margin-top: 20px;">
-                <h3>ข้อเสนอแนะหลัก:</h3>
-                <ol>
-                    <li>
-                        <span class="bold">พัฒนากระบวนการย้อมเฉพาะสำหรับ 3 คู่หลัก (F(W) + 40/2, FD + 50/2, FD + 50/3)</span>
-                        <p>การแก้ไข 3 คู่นี้จะลดปัญหาได้ถึง 59.9%</p>
-                    </li>
-                    <li>
-                        <span class="bold">หลีกเลี่ยงการใช้อัตราส่วน 1:8 กับคู่ที่มีความเสี่ยงสูง</span>
-                        <p>โดยเฉพาะอย่างยิ่งกับเครื่องกลุ่ม B และ A-5</p>
-                    </li>
-                    <li>
-                        <span class="bold">พิจารณาใช้อัตราส่วน 1:12 หรือ 1:13 กับงานที่มีความเสี่ยงสูง</span>
-                        <p>อัตราส่วนเหล่านี้พบปัญหาเพียง 1.2% เท่านั้น</p>
-                    </li>
-                    <li>
-                        <span class="bold">สร้างระบบเตือนความเสี่ยงล่วงหน้า</span>
-                        <p>เมื่อพบการรวมกันของปัจจัยเสี่ยง เช่น รุ่น FD กับเบอร์ด้าย 50/2 และอัตราส่วน 1:8</p>
-                    </li>
-                </ol>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="company-logo">DT</div>
+            <h1 class="login-title">การวิเคราะห์ปัจจัยที่มีผลต่อการย้อมสีด่าง</h1>
+            <div class="login-form">
+                <input type="password" id="passwordInput" class="password-input" placeholder="กรุณาใส่รหัสผ่าน" maxlength="6">
+                <button id="loginButton" class="login-button">เข้าสู่ระบบ</button>
+                <p id="errorMessage" class="error-message">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่</p>
             </div>
         </div>
     </div>
 
+    <!-- Main Content (initially hidden) -->
+    <div id="contentPage" class="content-container">
+        <button id="logoutButton" class="logout-btn">ออกจากระบบ</button>
+        <div class="header">
+            <h1>การวิเคราะห์ปัจจัยที่มีผลต่อการย้อมสีด่าง</h1>
+        </div>
+        
+        <div class="container">
+            <!-- ภาพรวมของปัจจัย -->
+            <div class="chart-container">
+                <div class="chart-title">ภาพรวมของปัจจัยที่มีผลต่อการย้อมสีด่าง</div>
+                <div class="grid grid-2">
+                    <div class="chart-wrapper">
+                        <canvas id="overallFactorsChart"></canvas>
+                    </div>
+                    <div>
+                        <h3>สรุปผลกระทบของแต่ละปัจจัย</h3>
+                        <div class="info-box">
+                            <p class="bold">ปัจจัยหลัก (60%): รุ่นและเบอร์ด้าย</p>
+                            <p>โดยเฉพาะ F(W) + 40/2, FD + 50/2, FD + 50/3</p>
+                        </div>
+                        <div class="info-box info-box-green">
+                            <p class="bold">ปัจจัยรอง (26%): อัตราส่วนน้ำต่อวัสดุ</p>
+                            <p>โดยเฉพาะอัตราส่วน 1:8 ซึ่งพบปัญหา 26.1%</p>
+                        </div>
+                        <div class="info-box info-box-yellow">
+                            <p class="bold">ปัจจัยอื่นๆ (14%): เครื่องย้อม, พนักงาน, ฯลฯ</p>
+                            <p>ไม่พบความแตกต่างอย่างมีนัยสำคัญ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ปัจจัยจากรุ่นและเบอร์ด้าย -->
+            <div class="chart-container">
+                <div class="chart-title">1. ปัจจัยจากรุ่นและเบอร์ด้าย (5 อันดับแรก)</div>
+                <div class="chart-wrapper">
+                    <canvas id="modelYarnChart"></canvas>
+                </div>
+                <div class="info-box info-box-yellow">
+                    <p class="bold">ข้อสังเกตสำคัญ:</p>
+                    <p>3 อันดับแรก (F(W) + 40/2, FD + 50/2, FD + 50/3) รวมกันคิดเป็น 59.9% ของปัญหาทั้งหมด</p>
+                    <p>รุ่น FD และ F(W) มีความอ่อนไหวสูงต่อการเกิดสีด่าง โดยเฉพาะเมื่อใช้กับเบอร์ด้าย 50/2, 40/2, และ 50/3</p>
+                </div>
+            </div>
+
+            <!-- ปัจจัยจากอัตราส่วนน้ำต่อวัสดุ -->
+            <div class="chart-container">
+                <div class="chart-title">2. ปัจจัยจากอัตราส่วนน้ำต่อวัสดุ (L:R)</div>
+                <div class="chart-wrapper">
+                    <canvas id="ratioChart"></canvas>
+                </div>
+                <div class="info-box info-box-green">
+                    <p class="bold">ข้อสังเกตสำคัญ:</p>
+                    <p>อัตราส่วน 1:8 มีความเสี่ยงสูงสุดอย่างมีนัยสำคัญ (26.1%)</p>
+                    <p>อัตราส่วน 1:12 และ 1:13 พบปัญหาน้อยที่สุด (เพียง 1.2% เท่านั้น)</p>
+                </div>
+            </div>
+
+            <!-- ปัจจัยจากเครื่องย้อม -->
+            <div class="chart-container">
+                <div class="chart-title">3. ปัจจัยจากเครื่องย้อม (10 อันดับแรก)</div>
+                <div class="chart-wrapper">
+                    <canvas id="machineChart"></canvas>
+                </div>
+                <div class="info-box">
+                    <p class="bold">ข้อสังเกตสำคัญ:</p>
+                    <p>ปัญหาจากเครื่องย้อมมีการกระจายตัวค่อนข้างสม่ำเสมอ (4.1-6.9%)</p>
+                    <p>เครื่องกลุ่ม B (B-1, B-6, B-7) มีปัญหาเมื่อใช้กับอัตราส่วน 1:8</p>
+                </div>
+            </div>
+
+            <!-- ปัจจัยจากพนักงานย้อม -->
+            <div class="chart-container">
+                <div class="chart-title">4. ปัจจัยจากพนักงานย้อม (ทั้งหมด)</div>
+                <div class="chart-wrapper">
+                    <canvas id="operatorChart"></canvas>
+                </div>
+                <div class="info-box info-box-green">
+                    <p class="bold">ข้อสังเกตสำคัญ:</p>
+                    <p>พนักงาน 5 อันดับแรก (เสนห์ ชัยณรงค์ SAN ธนกร PYAE) มีสัดส่วนปัญหาใกล้เคียงกัน (11.0-13.1%)</p>
+                    <p>ไม่พบความแตกต่างอย่างมีนัยสำคัญระหว่างพนักงาน 7 อันดับแรก</p>
+                </div>
+            </div>
+
+            <!-- ปัจจัยจากความสัมพันธ์ระหว่างเครื่องย้อมและอัตราส่วนน้ำต่อวัสดุ -->
+            <div class="chart-container">
+                <div class="chart-title">5. ปัจจัยจากความสัมพันธ์ระหว่างเครื่องย้อมและอัตราส่วนน้ำต่อวัสดุ (10 อันดับแรก)</div>
+                <div class="chart-wrapper">
+                    <canvas id="machineRatioChart"></canvas>
+                </div>
+                <div class="info-box info-box-yellow">
+                    <p class="bold">ข้อสังเกตสำคัญ:</p>
+                    <p>เครื่องในกลุ่ม B (B-1, B-6, B-7) มีปัญหากับอัตราส่วน 1:8 อย่างชัดเจน</p>
+                    <p>เครื่อง A-5 มีปัญหากับอัตราส่วน 1:8 เช่นกัน</p>
+                    <p>เครื่อง LX-7 มีปัญหากับอัตราส่วน 1:15 แตกต่างจากเครื่องอื่น</p>
+                </div>
+            </div>
+
+            <!-- สรุปและข้อเสนอแนะ -->
+            <div class="summary-section">
+                <h2>สรุปและข้อเสนอแนะ</h2>
+                <div class="info-box info-box-yellow">
+                    <h3>ปัจจัยที่มีผลสูงสุดต่อการย้อมสีด่าง:</h3>
+                    <ol>
+                        <li>
+                            <span class="bold">รุ่นและเบอร์ด้าย (60%)</span>
+                            <p>โดยเฉพาะ 3 คู่หลัก: F(W) + 40/2, FD + 50/2 และ FD + 50/3</p>
+                        </li>
+                        <li>
+                            <span class="bold">อัตราส่วนน้ำต่อวัสดุ (26%)</span>
+                            <p>โดยเฉพาะอัตราส่วน 1:8 ซึ่งพบปัญหาสูงถึง 26.1%</p>
+                        </li>
+                        <li>
+                            <span class="bold">ความสัมพันธ์ระหว่างเครื่องย้อมและอัตราส่วน (19%)</span>
+                            <p>โดยเฉพาะเครื่องกลุ่ม B (B-1, B-6, B-7) กับอัตราส่วน 1:8</p>
+                        </li>
+                    </ol>
+                    <p class="bold">ปัจจัยด้านพนักงาน (13%) และเครื่องย้อมอย่างเดียว (7%) มีผลกระทบน้อยกว่าอย่างมีนัยสำคัญ</p>
+                </div>
+                
+                <div class="info-box info-box-green" style="margin-top: 20px;">
+                    <h3>ข้อเสนอแนะหลัก:</h3>
+                    <ol>
+                        <li>
+                            <span class="bold">พัฒนากระบวนการย้อมเฉพาะสำหรับ 3 คู่หลัก (F(W) + 40/2, FD + 50/2, FD + 50/3)</span>
+                            <p>การแก้ไข 3 คู่นี้จะลดปัญหาได้ถึง 59.9%</p>
+                        </li>
+                        <li>
+                            <span class="bold">หลีกเลี่ยงการใช้อัตราส่วน 1:8 กับคู่ที่มีความเสี่ยงสูง</span>
+                            <p>โดยเฉพาะอย่างยิ่งกับเครื่องกลุ่ม B และ A-5</p>
+                        </li>
+                        <li>
+                            <span class="bold">พิจารณาใช้อัตราส่วน 1:12 หรือ 1:13 กับงานที่มีความเสี่ยงสูง</span>
+                            <p>อัตราส่วนเหล่านี้พบปัญหาเพียง 1.2% เท่านั้น</p>
+                        </li>
+                        <li>
+                            <span class="bold">สร้างระบบเตือนความเสี่ยงล่วงหน้า</span>
+                            <p>เมื่อพบการรวมกันของปัจจัยเสี่ยง เช่น รุ่น FD กับเบอร์ด้าย 50/2 และอัตราส่วน 1:8</p>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 ระบบวิเคราะห์ข้อมูลการย้อมผ้า | สงวนลิขสิทธิ์</p>
+        </div>
+    </div>
+
     <script>
+        // ฟังก์ชันที่ใช้ในการเข้ารหัสข้อมูล (อย่างง่าย)
+        function encodeData(data) {
+            return btoa(data);
+        }
+        
+        // ฟังก์ชันที่ใช้ในการถอดรหัสข้อมูล
+        function decodeData(encodedData) {
+            return atob(encodedData);
+        }
+        
+        // เก็บสถานะการล็อกอินใน localStorage
+        function setLoginState(isLoggedIn) {
+            const encodedState = encodeData(isLoggedIn.toString());
+            sessionStorage.setItem('dyeingDataLoginState', encodedState);
+        }
+        
+        // อ่านสถานะการล็อกอินจาก localStorage
+        function getLoginState() {
+            const encodedState = sessionStorage.getItem('dyeingDataLoginState');
+            if (!encodedState) return false;
+            return decodeData(encodedState) === 'true';
+        }
+        
+        // เช็คสถานะการล็อกอินเมื่อโหลดหน้า
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = getLoginState();
+            if (isLoggedIn) {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('contentPage').style.display = 'block';
+                initializeCharts();
+            } else {
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('contentPage').style.display = 'none';
+            }
+            
+            // Event listener for login button
+            document.getElementById('loginButton').addEventListener('click', function() {
+                checkPassword();
+            });
+            
+            // Event listener for password input (Enter key)
+            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+            
+            // Event listener for logout button
+            document.getElementById('logoutButton').addEventListener('click', function() {
+                logout();
+            });
+        });
+        
+        // ฟังก์ชันตรวจสอบรหัสผ่าน
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const correctPassword = "258456";
+            
+            if (password === correctPassword) {
+                setLoginState(true);
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('contentPage').style.display = 'block';
+                initializeCharts();
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+        
+        // ฟังก์ชันออกจากระบบ
+        function logout() {
+            setLoginState(false);
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('contentPage').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
         // Define colors
         const COLORS = [
             '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', 
@@ -247,7 +449,7 @@
         ];
 
         // สร้าง Charts
-        document.addEventListener('DOMContentLoaded', function() {
+        function initializeCharts() {
             // 1. ภาพรวมของปัจจัย (Pie Chart)
             const overallFactorsCtx = document.getElementById('overallFactorsChart').getContext('2d');
             const overallFactorsChart = new Chart(overallFactorsCtx, {
@@ -443,7 +645,7 @@
                     }
                 }
             });
-        });
+        }
     </script>
 </body>
 </html>
